@@ -55,7 +55,14 @@ class Graph:
     def __str__(self):
       return '({0},{1},{2})'.format(self._origin,self._destination,self._element)
 
-  #------------------------- Graph methods -------------------------
+    def destination(self):
+      return self._destination
+    
+    def origin(self):
+      return self._origin
+
+
+  #--------------- ---------- Graph methods -------------------------
   def __init__(self, directed=False):
     """Create an empty graph (undirected, by default).
 
@@ -144,3 +151,26 @@ class Graph:
     e = self.Edge(u, v, x)
     self._outgoing[u][v] = e
     self._incoming[v][u] = e
+    return e
+
+  def reverse_edge(self, u, v):
+    """Reverse and return a the Edge from u to v.
+
+    Raise a ValueError if u and v are not vertices of the graph.
+    """
+    e = self.get_edge(u, v)
+    del self._outgoing[u][v]
+    del self._incoming[v][u]
+
+    new_edge = self.Edge(v, u, e.element())
+    self._outgoing[v][u] = new_edge
+    self._incoming[u][v] = new_edge
+    return new_edge
+
+  def get_incoming_edge(self,u):
+    self._validate_vertex(u)
+    return self._incoming[u]
+  
+  def get_outgoing_edge(self,u):
+    self._validate_vertex(u)
+    return self._outgoing[u]

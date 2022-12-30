@@ -81,11 +81,12 @@ def pos_tagging(R, S, T, E):
 
         word_index = word_index + 1
     
+    #print(probabilities)
+
     maxValue,max_index = get_max_from_list(probabilities[len(S)-1])
 
     length = len(S)-2
     result[S[-1]] = index_to_role[max_index]
-
 
     for i in range(length,-1,-1):
         temp = indices[i+1][max_index]
@@ -96,6 +97,4 @@ def pos_tagging(R, S, T, E):
 
 
 def print_matrix(matrix):
-    for i in matrix:
-        for j in i:
-            print(j)
+    print(matrix)
