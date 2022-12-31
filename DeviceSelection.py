@@ -1,8 +1,19 @@
 from data_structure.graphs.graph import Graph
+class IndexOutOfRangeError(Exception):
+    pass
 class DeviceSelection:
     def __init__(self,N, X, data):
+        """
+        It is the constructor method of DeviceSelection class. It creates a new DeviceSelection object and computes the partiotions of devices.
+        Input:
+            - N is a tuple of strings identifying the devices.
+            - X is an integer
+            - data is a dictionary whose keys are the elements of N, and whose values are tuples of X-2 elements describing the
+            performances of the corresponding device over sentences from 3-term to X-term.
+        """
+
         __slots__ = '_devices','_max_words','_data','_graph','_deviceRight','_deviceLeft','_solution','_matches','_count'
-        #TODO: METTERE SLOTS
+        
         self._devices = N
         self._max_words = X
         self._data = data
@@ -15,17 +26,37 @@ class DeviceSelection:
         self._maxFlow() #Compute the maxFlow and minimum number of partitions
 
     def countDevices(self):
+        """
+        The countDevies method returns the minimum number C of devices for which we need to run the expensive tests. 
+        That is, C is the number of subsets in which the devices are partitioned so that every subset satisfies the non-interleaving property;
+        """
         return self._count
 
     def nextDevice(self,i):
+        """
+        The nextDevice method takes in input an integer i between 0 and C-1, and returns
+        the string identifying the device with highest rank in the i-th subset that has
+        been not returned before, or None if no further device exists (e.g., the first call
+        of nextDevice(0) returns the device with the highest rank in the first subset,
+        i.e., the one that dominates all the remaining devices in this subset, the
+        second call returns the device with the second highest rank, and so on). The
+        method throws an exception if the value in input is not in the range [0, C-1].
+        """
         if i<0 or i > (self._count-1): 
-            raise Exception()
+            raise IndexOutOfRangeError("Index:",i,"is out of range!")
         if len(self._solution[i]) == 0:
             return None
         return self._solution[i].pop(0)
 
 
-    def _dominates(self,d1,d2):
+    def _dominates(self,d1: Graph.Vertex,d2: Graph.Vertex):
+        """
+        This method takes in input two verteces of a graph, d1 and d2, and returns:
+            - True, if d1 dominates d2.
+            - False, if d1 does not dominate d2.
+        A device A dominates a device B if the performances of the device A are strictly better than the performances of the
+        the device B, on all possible sentence lengths.
+        """
         result = True
         t1 = self._data[d1.element()]
         t2 = self._data[d2.element()]
@@ -34,7 +65,13 @@ class DeviceSelection:
                 result = False
         return result
     
-    def _createBipartiteGraph(self):
+    def _create_FlowNetwork_on_BipartiteGraph(self):
+        """
+        This method creates a flow network based on a bipartite graph. The bipartite graph is built as follows:
+        We represent devices on a bipartite graph with N (N = number of devices) nodes on each side, 
+        with an edge between node u and node v only if u represents a device
+        that dominates the device represented by v. Note that u and v belong to different sides of the bipartite graph.
+        """
         #Create a bipartite graph
         self.source = self._graph.insert_vertex("S")
         self.target = self._graph.insert_vertex("T")
@@ -57,8 +94,16 @@ class DeviceSelection:
                 
     
     def _maxFlow(self):
+        """
+        This methods compute the max flow of a flow network built on a bipartite graph.
+        The idea is that computing the max flow means finding the maximum cardinality matching between all the devices, 
+        in other words the purpose of this method is finding a matching that covers as many vertices as possible.
+        The final operation of this method is to partition the N devices in subsets using the matching previously computed. 
+        In this way each subset enjoys the no-interleaving property and the computation is made such that we have the minimum number of subsets.
+        In addition, in each subset the position of each device represents its rank.
+        """
         #Create a bipartite graph
-        self._createBipartiteGraph()
+        self._create_FlowNetwork_on_BipartiteGraph()
         #Iterate all the simple paths from source to target of the residual graph and then update it.
         path = {}
         while _customDFS(self._graph,self.source,self.target,path):
@@ -128,6 +173,9 @@ class DeviceSelection:
                 
                 
     def _makePartitions(self):
+        """
+        This method partition the devices in subsets using the matching previously computed.
+        """
         keys = list(self._matches.keys())
         visited_keys = set()
 
@@ -145,7 +193,10 @@ class DeviceSelection:
         
 
 
-def _check_value(matches: dict,k: str,value: str,visited_keys: set):  
+def _check_value(matches: dict,k: str,value: str,visited_keys: set): 
+    """
+    This is an helper function for _makePartitions method.
+    """ 
     #print("k:",k,"value:",value)
     check = matches.get(value)
     if (check == None or len(check) == 0): #La lista è vuota. Il valore della entry considerata non domina nessun altro device.
@@ -175,8 +226,15 @@ def _check_value(matches: dict,k: str,value: str,visited_keys: set):
 
 def _customDFS(g: Graph,s: Graph.Vertex,t: Graph.Vertex,discovered: dict):
     """
-    Return True if there is a path from s to t. The path must be computed starting from the Vertex t in the dictionary passed as parameter.
-    Return False if there is not a path from s to t.
+    This function is a customization of the traditional DFS function.
+    It performs DFS and stops searching when it finds a path from the source node and the target node. 
+    It takes in input a graph g that is a flow network built on bipartite graph, a vertex s that is the source node, a vertex t that is the sink/target node, and a dict called "discovered". 
+        - discovered is a dictionary mapping each vertex to the edge that was used to
+        discover it during the DFS. (s should be "discovered" prior to the call. So, s is not in discovered but the edge that goes to s is memorized)
+        Newly discovered vertices will be added to the dictionary as a result.
+    The function returns:
+        - True if there is a path from s to t. Note that the discovered path must be read starting from the Vertex t and proceeding backword using the dictionary discovered.
+        - False if there is not a path from s to t.
     """
     for e in g.incident_edges(s):    # for every outgoing edge from s
         v = e.opposite(s)

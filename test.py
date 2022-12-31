@@ -80,7 +80,7 @@ sol = pos_tagging(R, S, T, E)
 end = time()-start
 out = read_sol(folder,len(T)-1)
 #print(R)
-print(S)
+#print(S)
 
 if sol != out:
     print('FAIL')
