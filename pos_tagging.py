@@ -16,7 +16,7 @@ def _get_max(myList,R,nextRole,T):
 
 def _get_max_final_word(myList,R,nextRole,T):
     """
-    This function is a variant of the function _get_max(). It must be used when it is the last word of the sentence
+    This function is a variant of the function _get_max(). It must be used when it is the last word of the sentence.
     """
     role = R[0]
     max_value = myList[0]*T[R[0]][nextRole]*T[nextRole]["End"]
@@ -74,37 +74,40 @@ def pos_tagging(R, S, T, E):
         index_to_role[index] = r
         index = index +1
 
-    word_index = 0
-    for word in S:
-        probabilities.insert(word_index, list()) 
-        indices.insert(word_index,list())
+    if(last == 0):
+        word_index = 0
+        probabilities.insert(word_index, list())
         role_index = 0
         for r in R:
-            if(word_index == 0):
-                previous_role = "Start"
-                weight = E[word][r]*T[previous_role][r]
-                probabilities[word_index].insert(role_index, weight)
-                
-                #print(word,r,"weight: ",weight)
-            elif(word_index == last):
-                
-                max,max_index = _get_max_final_word(probabilities[word_index-1],R,r,T)
-                weight = max*E[word][r]
-                probabilities[word_index].insert(role_index, weight)
-                indices[word_index].insert(role_index, max_index)
+            weight = E[S[word_index]][r]*T["Start"][r]*T[r]["End"]
+            probabilities[word_index].insert(role_index, weight)
+            role_index += 1
+    else:
+        word_index = 0
+        for word in S:
+            probabilities.insert(word_index, list()) 
+            indices.insert(word_index,list())
+            role_index = 0
+            for r in R:
+                if(word_index == 0):
+                    previous_role = "Start"
+                    weight = E[word][r]*T[previous_role][r]
+                    probabilities[word_index].insert(role_index, weight)
 
-                #print(word,r,"weight: ",weight,max_index)
+                elif(word_index == last):
+                    
+                    max,max_index = _get_max_final_word(probabilities[word_index-1],R,r,T)
+                    weight = max*E[word][r]
+                    probabilities[word_index].insert(role_index, weight)
+                    indices[word_index].insert(role_index, max_index)
+                else:
+                    max,max_index = _get_max(probabilities[word_index-1],R,r,T)
+                    weight = max*E[word][r]
+                    probabilities[word_index].insert(role_index,weight)
+                    indices[word_index].insert(role_index, max_index)
 
-            else:
-                max,max_index = _get_max(probabilities[word_index-1],R,r,T)
-                weight = max*E[word][r]
-                probabilities[word_index].insert(role_index,weight)
-                indices[word_index].insert(role_index, max_index)
-                #print(word,r,"weight: ",weight,max_index)
-            
-            role_index = role_index+1
-
-        word_index = word_index + 1
+                role_index = role_index+1
+            word_index = word_index + 1
     
     #print(probabilities)
 
