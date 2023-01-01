@@ -71,7 +71,7 @@ def read_sol(folder,r_num):
 # E['Spot']={'Noun': 1/2, 'Modal': 0, 'Verb': 1/2}
 # E['Jane']={'Noun': 1, 'Modal': 0, 'Verb': 0}
 # out={'Will': 'Modal', 'Mary': 'Noun', 'Spot': 'Verb', 'Jane': 'Noun'}
-folder = "dataset1"
+folder = "dataset3"
 T, E = read_data(folder)
 R = tuple(T.keys())[1:len(T)]
 S = tuple(E.keys())

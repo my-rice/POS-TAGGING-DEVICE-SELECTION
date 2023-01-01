@@ -116,7 +116,7 @@ class DeviceSelection:
                 self._graph.reverse_edge(prev_node,node)
                 node = prev_node
             path.clear()
-        
+            
         #Computing the matches
 
         for device in self._deviceRight:
