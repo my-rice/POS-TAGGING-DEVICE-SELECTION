@@ -116,12 +116,9 @@ class DeviceSelection:
                 self._graph.reverse_edge(prev_node,node)
                 node = prev_node
             path.clear()
-
-        #_printGraphDebug(self._graph)
         
         #Computing the matches
-        #print("Computing the matches*********************************")
-        
+
         for device in self._deviceRight:
             match = self._graph.get_outgoing_edge(device)
             #L'assunzione/osservazione è che nel dominio del nostro problema (grafo bipartito), un vertice ha sempre un solo arco uscente.
@@ -162,16 +159,7 @@ class DeviceSelection:
                 #print(value)
         #print("*********************************")
         #print(self._solution)
-
-        
-    # def _makePartitions2(self):
-    #     for key,value in self._matches.entries():
-            
-    #         for list in self._solution:
-    #             for device in list:
-    #                 pass
-                
-                
+          
     def _makePartitions(self):
         """
         This method partition the devices in subsets using the matching previously computed.
@@ -207,9 +195,11 @@ def _check_value(matches: dict,k: str,value: str,visited_keys: set):
                                             #merge_entry è una tupla
     #print(merge_entry)
     #Due casi possibili:
-    # 1 caso: Il valore della entry considerata si mappa con una key già visitata
+    # 1 caso: Il valore della entry considerata si mappa con una key già visitata in una precedente iterazione
     if value in visited_keys:
-        matches[k].append(merge_entry) #Faccio l'append della list della entry di chiave k con la lista recuperata
+        for elem in merge_entry: #Faccio l'append della list della entry di chiave k con la lista recuperata
+            matches[k].append(elem)
+        #matches[k].append(merge_entry) 
         return
     else:
     # 2 caso: il valore si mappa con una key non ancora visitata. Dopo aver fuso le due entry devo controllare con chi si mappa il valore della nuova entry.
@@ -260,6 +250,5 @@ def _printGraphDebug(graph: Graph):
         print("incoming")
         for e in graph.get_incoming_edge(v).values():
             l.append((e.origin().element(),e.destination().element()))
-        
         print(l)
         l.clear()
