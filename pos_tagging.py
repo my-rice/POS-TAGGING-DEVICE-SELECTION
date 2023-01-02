@@ -1,7 +1,8 @@
 def _get_max(myList,R,nextRole,T):
     """
     This function takes in input a list, a tuple R with all the roles, a string identifying the next role and the dictionary T.
-    It returns 
+    It returns the max value of the products between the values in the list and the corrisponding trasmission cost for the next role.
+    It returns also the index of the role that generates the max value.
     """
     role = R[0]
     max_value = myList[0]*T[R[0]][nextRole]
