@@ -89,10 +89,84 @@ else:
     print(end)
 
 #Testing DeviceSelection
-N = ('Device 1', 'Device 2', 'Device 3', 'Device 4', 'Device 5')
-X = 7
-data = {'Device 1': (100, 99, 85, 77, 63), 'Device 2': (101, 88, 82, 75, 60), 'Device 3': (98, 89, 84, 76, 61), 'Device 4': (110, 65, 65, 67, 80), 'Device 5': (95, 80, 80, 63, 60)}
-partition = [['Device 1', 'Device 3', 'Device 5'], ['Device 2'], ['Device 4']]
+# N = ('Device 1', 'Device 2', 'Device 3', 'Device 4', 'Device 5')
+# X = 7
+# data = {'Device 1': (100, 99, 85, 77, 63), 'Device 2': (101, 88, 82, 75, 60), 'Device 3': (98, 89, 84, 76, 61), 'Device 4': (110, 65, 65, 67, 80), 'Device 5': (95, 80, 80, 63, 60)}
+# partition = [['Device 1', 'Device 3', 'Device 5'], ['Device 2'], ['Device 4']]
+
+# start = time()
+# ds=DeviceSelection(N, X, data)
+# C=ds.countDevices()
+# subsets = [[] for i in range(C)]
+# for i in range(C):
+#     dev = ds.nextDevice(i)
+#     while dev is not None:
+#         subsets[i].append(dev)
+#         dev = ds.nextDevice(i)
+# end=time()-start
+
+# if sorted(subsets) != sorted(partition):
+#     print('FAIL')
+# else:
+#     print('True')
+#     print(end)
+
+
+#Testing DeviceSelection
+def dominates(a, b):
+    done = True
+    for i in range(len(a)):
+        if a[i] <= b[i]:
+            done = False
+            break
+    return done
+
+def verify(data,partition):
+    try:
+        devices = list(data.keys())
+        for sets in partition:
+            for i in range(len(sets)-1):
+                if not dominates(data[sets[i]], data[sets[i+1]]):
+                    return False
+                devices.remove(sets[i])
+            devices.remove(sets[len(sets)-1])
+        if len(devices) != 0:
+            return False
+    except:
+        return False
+    return True
+
+def dev_read_data():
+    data = dict()
+    f = open(folder + "data",'r')
+    for line in f:
+        sline=line.split()
+        data[sline[0].strip()] = []
+        for i in range(1, len(sline)):
+            data[sline[0].strip()].append(int(sline[i]))
+    f.close()
+    return data
+
+def dev_read_sol():
+    sol = []
+    f = open(folder + "devsol",'r')
+    for line in f:
+        sline=line.split()
+        subset=[]
+        for dev in sline:
+            subset.append(dev.strip())
+        sol.append(subset)
+    f.close()
+    return sol
+
+# N = ('Device 1', 'Device 2', 'Device 3', 'Device 4', 'Device 5')
+# X = 7
+# data = {'Device 1': (100, 99, 85, 77, 63), 'Device 2': (101, 88, 82, 75, 60), 'Device 3': (98, 89, 84, 76, 61), 'Device 4': (110, 65, 65, 67, 80), 'Device 5': (95, 80, 80, 63, 60)}
+# partition = [['Device 1', 'Device 3', 'Device 5'], ['Device 2'], ['Device 4']]
+folder = "dev_dataset1/"
+data = dev_read_data()
+N = tuple(data.keys())
+X = len(data['D0'])
 
 start = time()
 ds=DeviceSelection(N, X, data)
@@ -104,8 +178,8 @@ for i in range(C):
         subsets[i].append(dev)
         dev = ds.nextDevice(i)
 end=time()-start
-
-if sorted(subsets) != sorted(partition):
+partition = dev_read_sol()
+if not verify(data, subsets) or C > len(partition):
     print('FAIL')
 else:
     print('True')
