@@ -76,6 +76,7 @@ class DeviceSelection:
         self.source = self._graph.insert_vertex("S")
         self.target = self._graph.insert_vertex("T")
 
+        #Creating all vertices and edges from verteces to target and from source to target  
         for d in self._devices:
             device = self._graph.insert_vertex(d)
             self._deviceLeft.append(device)
@@ -84,7 +85,7 @@ class DeviceSelection:
             device = self._graph.insert_vertex(d)
             self._deviceRight.append(device)
             self._graph.insert_edge(device,self.target,1) 
-
+        #Creating all edges from left verteces to right verteces based on domination relationship  
         for d1 in self._deviceLeft:
             for d2 in self._deviceRight:
                 if d1.element() == d2.element():
@@ -104,12 +105,12 @@ class DeviceSelection:
         """
         #Create a bipartite graph
         self._create_FlowNetwork_on_BipartiteGraph()
-        #Iterate all the simple paths from source to target of the residual graph and then update it.
+
+        #Iterate all the simple paths from source to target of the residual graph and then update it, reversing the edges of the found path.
         path = {}
         while _customDFS(self._graph,self.source,self.target,path):
             node = self.target
             while(node != self.source):
-
                 edge = path.get(node)
                 prev_node = edge.origin() #next node
                 
@@ -121,8 +122,10 @@ class DeviceSelection:
 
         for device in self._deviceRight:
             match = self._graph.get_outgoing_edge(device)
-            #L'assunzione/osservazione è che nel dominio del nostro problema (grafo bipartito), un vertice ha sempre un solo arco uscente.
-            #Questo può rappresentare un match con un altro device oppure un collegamento con il vertice Target 
+            #L'assunzione/osservazione è che nel dominio del nostro problema (flow network di un grafo bipartito), un vertice ha sempre un solo arco uscente.
+            #Questo può rappresentare un match con un altro device oppure un collegamento con il vertice Target
+            #Se l'arco uscente incide sul Target, allora il nodo non ha un matching. 
+            #Se l'arco uscente incide su un altro nodo del grafo, detto X, allora il nodo ha un matching e significa che quest'ultimo nodo è dominato da X.
             temp = next(iter(match.items()))[0]
             
             if(temp != self.target):
@@ -146,6 +149,7 @@ class DeviceSelection:
         #     print("key:",key,"value:",value)
         # print("*********************************")
         
+        #Inserting the discovered partitions in the solution list and computing the number of partitions.  
         for key,value in self._matches.items():
             #print("key:",key,"value",value)
             if(len(value) == 0):
@@ -164,9 +168,12 @@ class DeviceSelection:
         """
         This method partition the devices in subsets using the matching previously computed.
         """
+        #Creating a copy of the keys of the dictionary self._matches
         keys = list(self._matches.keys())
+        #Saving all the visited_keys in the following iteretion
         visited_keys = set()
 
+        #Iterate all the keys of self._matches
         for k in keys:
             if k in visited_keys:
                 continue
@@ -177,13 +184,14 @@ class DeviceSelection:
             if (value == None or len(value) == 0):
                 continue
             #print(value)
+            #I have to check the value associated to k. If the value appears in another match, the two matches must be merged into a single partition  
             _check_value(self._matches,k,value[0],visited_keys)
         
 
 
 def _check_value(matches: dict,k: str,value: str,visited_keys: set): 
     """
-    This is an helper function for _makePartitions method.
+    This is an helper function for _makePartitions method. It is a recursive function. 
     """ 
     #print("k:",k,"value:",value)
     check = matches.get(value)
@@ -192,17 +200,20 @@ def _check_value(matches: dict,k: str,value: str,visited_keys: set):
 
     #In questo punto del codice, il valore della entry considerata domina un altro device
     merge_entry = matches.pop(value) #Rimuovo la entry dal dizionario per fonderla con l'entry considerata.
-                                            #merge_entry è una tupla
+                                     #merge_entry è una tupla
     #print(merge_entry)
+
+    #Merging...
     #Due casi possibili:
     # 1 caso: Il valore della entry considerata si mappa con una key già visitata in una precedente iterazione
     if value in visited_keys:
         for elem in merge_entry: #Faccio l'append della list della entry di chiave k con la lista recuperata
             matches[k].append(elem)
-        #matches[k].append(merge_entry) 
         return
     else:
-    # 2 caso: il valore si mappa con una key non ancora visitata. Dopo aver fuso le due entry devo controllare con chi si mappa il valore della nuova entry.
+    # 2 caso: Il valore della entry considerata si mappa con una key non ancora visitata.
+    #         Dopo aver fuso le due entry devo controllare se il valore di merge_entry (la nuova entry) si mappa con un'ulteriore entry.
+    # Nota: Nel ramo else il valore di merge_entry è sicuramente di un solo valore perché il merge viene fatto sull'iterazione corrente ed un match ancora non visitato NON può contenere più di un valore. 
         visited_keys.add(value)
         for elem in merge_entry:
             matches[k].append(elem)
@@ -226,18 +237,22 @@ def _customDFS(g: Graph,s: Graph.Vertex,t: Graph.Vertex,discovered: dict):
         - True if there is a path from s to t. Note that the discovered path must be read starting from the Vertex t and proceeding backword using the dictionary discovered.
         - False if there is not a path from s to t.
     """
-    for e in g.incident_edges(s):    # for every outgoing edge from s
+    # Iterating every outgoing edge from s
+    for e in g.incident_edges(s):    
         v = e.opposite(s)
-        if v not in discovered:        # v is an unvisited vertex
-            discovered[v] = e          # e is the tree edge that discovered v
-            if(v != t):
+        if v not in discovered:        #If v is an unvisited vertex
+            discovered[v] = e        
+            if(v != t): #If the vertex is the target I have found a path.
                 if(_customDFS(g,v,t,discovered)):
                     return True
-            else:
+            else: 
                 return True
     return False
                     
 def _printGraphDebug(graph: Graph):
+    """
+    Utility function. This function prints the graph taken in input.
+    """
     vertices = graph.vertices()
     l = list()
     for v in vertices:
