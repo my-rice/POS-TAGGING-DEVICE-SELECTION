@@ -17,26 +17,26 @@ from time import time
 # partition = [['Device 4', 'Device 8', 'Device 10'], ['Device 1', 'Device 5'], ['Device 9', 'Device 7'], ['Device 2'], ['Device 3'], ['Device 6']]
 
 #Testing DeviceSelection
-N = ('Device 1', 'Device 2')#, 'Device 3', 'Device 4', 'Device 5')
-X = 7
-data = {'Device 1': (100, 99, 85, 77, 63), 'Device 2': (101, 88, 82, 75, 60)}#, 'Device 3': (98, 89, 84, 76, 61), 'Device 4': (110, 65, 65, 67, 80), 'Device 5': (95, 80, 80, 63, 60)}
-partition = [['Device 1'], ['Device 2']]#, 'Device 3', 'Device 5'], ['Device 2'], ['Device 4']]
+# N = ('Device 1', 'Device 2')#, 'Device 3', 'Device 4', 'Device 5')
+# X = 7
+# data = {'Device 1': (100, 99, 85, 77, 63), 'Device 2': (101, 88, 82, 75, 60)}#, 'Device 3': (98, 89, 84, 76, 61), 'Device 4': (110, 65, 65, 67, 80), 'Device 5': (95, 80, 80, 63, 60)}
+# partition = [['Device 1'], ['Device 2']]#, 'Device 3', 'Device 5'], ['Device 2'], ['Device 4']]
 
 #Dataset Ado 3
-# N = ()
-# for i in range(10):
-#     t = ('Device '+str(i+1))
-#     N = N + (t, )
-# X = 5
-# data = {}
-# for item in N:
-#     t = ()
-#     for i in range(3):
-#         val = N.index(item)
-#         t = t + (val, )
-#     data[item] = t
-# print(data)
-# partition = [['Device 10', 'Device 9', 'Device 8', 'Device 7', 'Device 6', 'Device 5', 'Device 4', 'Device 3', 'Device 2', 'Device 1']]
+N = ()
+for i in range(10):
+    t = ('Device '+str(i+1))
+    N = N + (t, )
+X = 5
+data = {}
+for item in N:
+    t = ()
+    for i in range(3):
+        val = N.index(item)
+        t = t + (val, )
+    data[item] = t
+print(data)
+partition = [['Device 10', 'Device 9', 'Device 8', 'Device 7', 'Device 6', 'Device 5', 'Device 4', 'Device 3', 'Device 2', 'Device 1']]
 
 #test Ado 4
 # N = ()

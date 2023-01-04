@@ -63,7 +63,7 @@ def read_sol(folder,r_num):
 # T=dict()
 # T['Start']={'Noun': 3/4, 'Modal': 1/4, 'Verb': 0, 'End': 0}
 # T['Noun']={'Noun': 1/9, 'Modal': 3/9, 'Verb': 1/9, 'End': 4/9}
-# T['Modal']={'Noun': 1/4, 'Modal': 0, 'Verb': 3/4, 'End': 0}
+# T['Modal']={'Noeun': 1/4, 'Modal': 0, 'Verb': 3/4, 'End': 0}
 # T['Verb']={'Noun': 1, 'Modal': 0, 'Verb': 0, 'End': 0}
 # E=dict()
 # E['Will']={'Noun': 1/4, 'Modal': 3/4, 'Verb': 0}
@@ -163,7 +163,7 @@ def dev_read_sol():
 # X = 7
 # data = {'Device 1': (100, 99, 85, 77, 63), 'Device 2': (101, 88, 82, 75, 60), 'Device 3': (98, 89, 84, 76, 61), 'Device 4': (110, 65, 65, 67, 80), 'Device 5': (95, 80, 80, 63, 60)}
 # partition = [['Device 1', 'Device 3', 'Device 5'], ['Device 2'], ['Device 4']]
-folder = "dev_dataset1/"
+folder = "dev_dataset2/"
 data = dev_read_data()
 N = tuple(data.keys())
 X = len(data['D0'])

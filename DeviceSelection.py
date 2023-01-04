@@ -108,7 +108,7 @@ class DeviceSelection:
 
         #Iterate all the simple paths from source to target of the residual graph and then update it, reversing the edges of the found path.
         path = {}
-        while _customDFS(self._graph,self.source,self.target,path):
+        while _customDFS(self._graph,self.source,self.source,self.target,path):
             node = self.target
             while(node != self.source):
                 edge = path.get(node)
@@ -225,11 +225,11 @@ def _check_value(matches: dict,k: str,value: str,visited_keys: set):
         
     return
 
-def _customDFS(g: Graph,s: Graph.Vertex,t: Graph.Vertex,discovered: dict):
+def _customDFS(g: Graph,s: Graph.Vertex,source: Graph.Vertex,t: Graph.Vertex,discovered: dict):
     """
     This function is a customization of the traditional DFS function.
     It performs DFS and stops searching when it finds a path from the source node and the target node. 
-    It takes in input a graph g that is a flow network built on bipartite graph, a vertex s that is the source node, a vertex t that is the sink/target node, and a dict called "discovered". 
+    It takes in input a graph g that is a flow network built on bipartite graph, a vertex s that is initially the source node, the source vertex that is the the source node also during the recursion, a vertex t that is the sink/target node, and a dict called "discovered". 
         - discovered is a dictionary mapping each vertex to the edge that was used to
         discover it during the DFS. (s should be "discovered" prior to the call. So, s is not in discovered but the edge that goes to s is memorized)
         Newly discovered vertices will be added to the dictionary as a result.
@@ -240,10 +240,12 @@ def _customDFS(g: Graph,s: Graph.Vertex,t: Graph.Vertex,discovered: dict):
     # Iterating every outgoing edge from s
     for e in g.incident_edges(s):    
         v = e.opposite(s)
+        if v == source: #The opposite vertex of e is the source node of the flow network. I am not interested in path that passes through the source node. 
+            return False
         if v not in discovered:        #If v is an unvisited vertex
             discovered[v] = e        
             if(v != t): #If the vertex is the target I have found a path.
-                if(_customDFS(g,v,t,discovered)):
+                if(_customDFS(g,v,source,t,discovered)):
                     return True
             else: 
                 return True
