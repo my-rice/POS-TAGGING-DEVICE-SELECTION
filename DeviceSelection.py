@@ -60,7 +60,8 @@ class DeviceSelection:
         result = True
         t1 = self._data[d1.element()]
         t2 = self._data[d2.element()]
-        for i in range(0,len(t1)):
+        num = self._max_words-2
+        for i in range(0,num):
             if t1[i] <= t2[i]:
                 result = False
         return result
@@ -72,7 +73,8 @@ class DeviceSelection:
         with an edge between node u and node v only if u represents a device
         that dominates the device represented by v. Note that u and v belong to different sides of the bipartite graph.
         """
-        #Create a bipartite graph
+        #Creating a flow network on a bipartite graph...
+        #Inserting Source vertex and Sink/Target vertex to the graph.
         self.source = self._graph.insert_vertex("S")
         self.target = self._graph.insert_vertex("T")
 
@@ -122,7 +124,7 @@ class DeviceSelection:
 
         for device in self._deviceRight:
             match = self._graph.get_outgoing_edge(device)
-            #L'assunzione/osservazione è che nel dominio del nostro problema (flow network di un grafo bipartito), un vertice ha sempre un solo arco uscente.
+            #Note: L'assunzione/osservazione è che nel dominio del nostro problema (flow network di un grafo bipartito), un vertice ha sempre un solo arco uscente.
             #Questo può rappresentare un match con un altro device oppure un collegamento con il vertice Target
             #Se l'arco uscente incide sul Target, allora il nodo non ha un matching. 
             #Se l'arco uscente incide su un altro nodo del grafo, detto X, allora il nodo ha un matching e significa che quest'ultimo nodo è dominato da X.
@@ -170,7 +172,7 @@ class DeviceSelection:
         """
         #Creating a copy of the keys of the dictionary self._matches
         keys = list(self._matches.keys())
-        #Saving all the visited_keys in the following iteretion
+        #Saving all the visited_keys in the following set   
         visited_keys = set()
 
         #Iterate all the keys of self._matches
@@ -181,7 +183,7 @@ class DeviceSelection:
                 visited_keys.add(k)
 
             value = self._matches.get(k)
-            if (value == None or len(value) == 0):
+            if (value == None or len(value) == 0): # If value is empty, there is no need to check if the value is key of another item in the dict "matches".
                 continue
             #print(value)
             #I have to check the value associated to k. If the value appears in another match, the two matches must be merged into a single partition  
@@ -193,7 +195,6 @@ def _check_value(matches: dict,k: str,value: str,visited_keys: set):
     """
     This is an helper function for _makePartitions method. It is a recursive function. 
     """ 
-    #print("k:",k,"value:",value)
     check = matches.get(value)
     if (check == None or len(check) == 0): #La lista è vuota. Il valore della entry considerata non domina nessun altro device.
         return
@@ -259,12 +260,12 @@ def _printGraphDebug(graph: Graph):
     l = list()
     for v in vertices:
         print("[Vertex]:",v)
-        print("outgoing")
+        print("outgoing:")
         for e in graph.incident_edges(v):
             l.append((e.origin().element(),e.destination().element()))
         print(l)
         l.clear()
-        print("incoming")
+        print("incoming:")
         for e in graph.get_incoming_edge(v).values():
             l.append((e.origin().element(),e.destination().element()))
         print(l)

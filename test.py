@@ -163,10 +163,10 @@ def dev_read_sol():
 # X = 7
 # data = {'Device 1': (100, 99, 85, 77, 63), 'Device 2': (101, 88, 82, 75, 60), 'Device 3': (98, 89, 84, 76, 61), 'Device 4': (110, 65, 65, 67, 80), 'Device 5': (95, 80, 80, 63, 60)}
 # partition = [['Device 1', 'Device 3', 'Device 5'], ['Device 2'], ['Device 4']]
-folder = "dev_dataset2/"
+folder = "dev_dataset3/"
 data = dev_read_data()
 N = tuple(data.keys())
-X = len(data['D0'])
+X = len(data['D0'])+2
 
 start = time()
 ds=DeviceSelection(N, X, data)

@@ -118,7 +118,7 @@ def pos_tagging(R, S, T, E):
                 role_index = role_index+1
             word_index = word_index + 1
     
-    #print(probabilities)
+    #print(indices)
 
     #Finding the max probability of the last word in the probabilities matrix.
     #I choose the role of the last word with the highest probability and proceed backward reconstructing the solution.
