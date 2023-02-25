@@ -1,8 +1,8 @@
-## DAA-final-homework
-# PART1
+# DAA-final-homework
+## PART1
 One of the most important operations that is implemented by speech recognition
 devices is POS tagging. It consists in tagging each part of a sentence with the role of
-that term in the sentence (e.g., noun, verb, or modal).
+that term in the sentence (e.g., noun, verb, or modal). <br>
 To this aim, data analysis algorithms working on huge sets of data are used to
 produce Emission and Transition Probabilities.
 Given two roles R1 (e.g., noun) and R2 (e.g., verb) the transition probability p(R1,
