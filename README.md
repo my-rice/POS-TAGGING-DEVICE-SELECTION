@@ -49,17 +49,17 @@ sentence ends with a noun) = 1/864 <br>
 Hence, we can conclude that the second assignment is more likely to be the right
 one. <br>
 Design a function pos_tagging(R, S, T, E) that takes in input: <br>
-● a tuple R of roles, <br>
-● a tuple S of strings, <br>
-● a dictionary T whose keys are the roles in R plus the special role Start and
+&emsp; ● a tuple R of roles, <br>
+&emsp; ● a tuple S of strings, <br>
+&emsp; ● a dictionary T whose keys are the roles in R plus the special role Start and
 values are dictionaries T[r] such that: <br>
-○ the keys of T[r] are the roles in R plus the special role End <br>
-○ the values of T[r] are the transition probabilities between r and the
+&emsp; &emsp; ○ the keys of T[r] are the roles in R plus the special role End <br>
+&emsp; &emsp; ○ the values of T[r] are the transition probabilities between r and the
 corresponding role defined by the key <br>
-● a dictionary E whose keys are the strings in S and value are dictionaries E[s]
+&emsp; ● a dictionary E whose keys are the strings in S and value are dictionaries E[s]
 such that <br>
-○ the keys of E[s] are the roles in R <br>
-○ the values in E[s] are the emission probabilities between s and the
+&emsp; &emsp; ○ the keys of E[s] are the roles in R <br>
+&emsp; &emsp; ○ the values in E[s] are the emission probabilities between s and the
 corresponding role defined by the key <br>
 The function returns a dictionary whose keys are the words in S and the values are
 the roles assigned to these words, so that the selected assignment is the one of
@@ -113,7 +113,7 @@ sentences
 6-term
 sentences
 7-term
-sentences
+sentences <br>
 Device 1 100 99 85 77 63  <br>
 Device 2 101 88 82 75 60 <br>
 Device 3 98 89 84 76 61 <br>
@@ -128,16 +128,16 @@ remaining devices (since in all cases it is not better either on 3-term or on 7-
 sentences and it is better either on 3-term or on 4-term sentences), and similarly
 Device 4 is not dominated and does not dominate each of the remaining devices.
 Design a class DeviceSelection with the following interface: <br>
-● DeviceSelection(N, X, data), where N is a tuple of strings identifying the
+&emsp;  DeviceSelection(N, X, data), where N is a tuple of strings identifying the
 devices, X is an integer, and data is a dictionary whose keys are the elements
 of N, and whose values are tuples of X-2 elements describing the
 performances of the corresponding device over sentences from 3-term to
 X-term; <br>
-● countDevices(), that returns the minimum number C of devices for which we
+&emsp; ● countDevices(), that returns the minimum number C of devices for which we
 need to run the expensive tests. That is, C is the number of subsets in which
 the devices are partitioned so that every subset satisfies the non-interleaving
 property; <br>
-● nextDevice(i), that takes in input an integer i between 0 and C-1, and returns
+&emsp; ● nextDevice(i), that takes in input an integer i between 0 and C-1, and returns
 the string identifying the device with highest rank in the i-th subset that has
 been not returned before, or None if no further device exists (e.g., the first call
 of nextDevice(0) returns the device with the highest rank in the first subset,
